@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'messaging_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': 'database-1',
+        'NAME': 'messaging_app',
         'USER': 'admin',
         'PASSWORD': 'Keep!MyDatabase!!Safe!!01',
         'HOST': 'database-1.cj42mqssetml.us-east-2.rds.amazonaws.com',
