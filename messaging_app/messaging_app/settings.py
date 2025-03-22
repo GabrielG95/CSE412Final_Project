@@ -73,9 +73,10 @@ WSGI_APPLICATION = 'messaging_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# Changed this to use MySQL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': 'database-1',
         'USER': 'admin',
         'PASSWORD': 'Keep!MyDatabase!!Safe!!01',
