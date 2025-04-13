@@ -9,21 +9,34 @@ from .models import Message
 def home(request):
     return render(request, "chat/home.html")
 
+def chatroom_view(request):
+    return render(request, "chat/chatroom.html")
+
+def chat_ai_view(request):
+    return render(request, "chat/chat_ai.html")
+
+def contacts_view(request):
+    return render(request, "chat/contacts.html")
+
+def settings_view(request):
+    return render(request, "chat/settings.html")
+
 
 # def home(request):
 #     return render(request, "chat/chatroom.html")
 
-def chatroom(request):
+# def chatroom(request):
     # In order to view this form in chatroom, we have to render it
-    if request.method == 'POST':
-        form = MessageForm(request.POST)
-        if form.is_valid():
-            msg = form.save(commit=False)
-            msg.user = request.user
-            msg.save()
-            return redirect('chat/chatroom')
-    else:
-        form = MessageForm()
-
-    messages = Message.objects.all().order_by('timestamp')
-    return render(request, "chat/chatroom.html", {'form': form, 'messages': messages})
+    # if request.method == 'POST':
+        # form = MessageForm(request.POST)
+        # if form.is_valid():
+            # msg = form.save(commit=False)
+            # msg.user = request.user
+            # msg.save()
+            # return redirect('chat/chatroom')
+    # else:
+        # form = MessageForm()
+# 
+    # messages = Message.objects.all().order_by('timestamp')
+    # return render(request, "chat/chatroom.html", {'form': form, 'messages': messages})
+# 
