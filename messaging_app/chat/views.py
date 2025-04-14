@@ -10,7 +10,18 @@ def home(request):
     return render(request, "chat/home.html")
 
 def chatroom_view(request):
-    return render(request, "chat/chatroom.html")
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.author = request.user
+            message.save()
+            return redirect('chatroom')
+    else:
+        form = MessageForm()
+
+    messages = Message.objects.all().order_by('-date_posted')
+    return render(request, "chat/chatroom.html", {"form": form, "messages": messages})
 
 def chat_ai_view(request):
     return render(request, "chat/chat_ai.html")

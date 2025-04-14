@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 class Message(models.Model):
     # .TextField is for unlimited messaging input
-    messages = models.TextField()
+    content = models.TextField()
     # Get current time for message
     date_posted = models.DateTimeField(default=timezone.now)
     # on_delete will remove the message when user deletes account

@@ -4,12 +4,12 @@ from .models import Message
 class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
-        fields = ['messages']
+        fields = ['content']
         widgets = {
-                'messages': forms.Textarea(attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Type your message here...',
-                    'rows': 10
+                'content': forms.Textarea(attrs={
+                    'class': 'form-control custom-message-box',
+                    'placeholder': 'Message...',
+                    'rows': 2,
                     })
                 }
 
