@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .models import User
 from .forms import MessageForm
 from .models import Message
 """
@@ -14,16 +15,14 @@ def chatroom_view(request):
         form = MessageForm(request.POST)
         if form.is_valid():
             message = form.save(commit=False)
-            if request.user.is_authenticated:
-                message.author = request.user
-
+            message.author = request.user if request.user.is_authenticated else None
             message.save()
             return redirect('chatroom')
     else:
         form = MessageForm()
 
-    messages = Message.objects.all().order_by('-date_posted')
-    return render(request, "chat/chatroom.html", {"form": form, "messages": messages})
+    messages = Message.objects.all().order_by('date_posted')
+    return render(request, "chat/chatroom.html", {"form": form, "content": messages})
 
 def chat_ai_view(request):
     return render(request, "chat/chat_ai.html")
