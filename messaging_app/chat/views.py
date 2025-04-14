@@ -14,7 +14,9 @@ def chatroom_view(request):
         form = MessageForm(request.POST)
         if form.is_valid():
             message = form.save(commit=False)
-            message.author = request.user
+            if request.user.is_authenticated:
+                message.author = request.user
+
             message.save()
             return redirect('chatroom')
     else:
