@@ -23,7 +23,7 @@
             {% for message in content %}
                 <div class="message mb-2">
                     <strong>{{ message.user.username }}</strong>: {{ message.content }} <br>
-                    <small>{{ message.timestamp }}</small>
+                    <small>{{ message.date_posted}}</small>
                 </div>
             {% endfor %}
         </div>
