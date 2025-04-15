@@ -22,12 +22,33 @@
         <div class="chat-containers">
             {% for message in content %}
                 <div class="message mb-2">
-                    <strong>{{ message.user.username }}</strong>: {{ message.content }} <br>
+                    <strong>{{ message.user.username }}</strong> {{ message.content }} <br>
                     <small>{{ message.date_posted}}</small>
                 </div>
             {% endfor %}
         </div>
     </div>
+
+    <script>
+        function fetchMessages() {
+            fetch('/get_messages/')
+                .then(response=> response.json())
+                .then(data => {
+                    const container = document.getElementById('chat-box');
+                    container.innerHTML = '';
+                    data.messages.forEach(msg => {
+                        container.innerHTML += `
+                        <div class ="message mb-2">
+                            <strong>${msg.author}</strong>: ${msg.content} <br>
+                            <small>${msg.date}</small>
+                        </div>
+                    `;
+                });
+            });
+        }
+        setInterval(fetchMessages, 2000);
+        fetchMessages();
+    </script>
 </body>
 </html>
 <!-- <html> -->

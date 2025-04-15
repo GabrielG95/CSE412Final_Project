@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .models import User
 from .forms import MessageForm
@@ -23,6 +24,17 @@ def chatroom_view(request):
 
     messages = Message.objects.all().order_by('date_posted')
     return render(request, "chat/chatroom.html", {"form": form, "content": messages})
+
+
+# Get messages to update in real time
+def get_messages(request):
+    messages = Message.objects.all().order_by('date_posted')
+    data = [{
+        "author": message.author.username,
+        "content": message.content,
+        "date": message.date_posted.strftime("%Y-%m-%d %H:%M:%S")
+    } for message in messages]
+    return JsonResponse({"messages": data})
 
 def chat_ai_view(request):
     return render(request, "chat/chat_ai.html")
