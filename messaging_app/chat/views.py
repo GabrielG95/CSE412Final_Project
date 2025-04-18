@@ -14,7 +14,14 @@ import string
 def home(request):
     if "chat_username" in request.session:
         del request.session["chat_username"]
-    return render(request, "chat/home.html")
+
+    response = render(request, "chat/home.html")
+
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+
+    return response
 
 def chatroom_view(request):
     if request.method == 'POST':
