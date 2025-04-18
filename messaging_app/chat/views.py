@@ -3,6 +3,9 @@ from django.shortcuts import render, redirect
 from .models import User
 from .forms import MessageForm, UsernameForm
 from .models import Message
+import random
+import string
+
 """
 """
 # Create your views here.
@@ -52,6 +55,18 @@ def set_username(request):
     else:
         form = UsernameForm()
     return render(request, 'chat/set_username.html', {'form': form})
+
+# Generate random letters and numbers for a username
+def generate_random_username():
+    letters = ''.join(random.choices(string.ascii_letters, k=5))
+    numbers = ''.join(random.choices(string.digits, k=5))
+    return f"{letters}{numbers}"
+
+# Create the actual username
+def random_username(request):
+    username = generate_random_username()
+    request.session["chat_username"] = username
+    return redirect('chatroom')
 
 def chat_ai_view(request):
     return render(request, "chat/chat_ai.html")
