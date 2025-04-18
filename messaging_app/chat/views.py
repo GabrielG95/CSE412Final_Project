@@ -1,7 +1,8 @@
+from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .models import User
-from .forms import MessageForm, UsernameForm
+from .forms import MessageForm, UsernameForm, RegisterForm
 from .models import Message
 import random
 import string
@@ -28,7 +29,8 @@ def chatroom_view(request):
         form = MessageForm(request.POST)
         if form.is_valid():
             message = form.save(commit=False)
-            message.username = request.session.get("chat_username", "Anonymous")
+            # message.username = request.session.get("chat_username", "Anonymous")
+            message.username = request.user.username if request.user.is_authenticated else request.session.get("chat_username", "Anonymous")
             if request.user.is_authenticated:
                 message.author = request.user
             message.save()
@@ -74,6 +76,30 @@ def random_username(request):
     username = generate_random_username()
     request.session["chat_username"] = username
     return redirect('chatroom')
+
+def register_view(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = RegisterForm()
+    return render(request, "chat/register.html", {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('chatroom')
+    return render(request, "chat/login.html")
+
+def logout_view(request):
+    logout(request)
+    return redirect('chat-room')
 
 def chat_ai_view(request):
     return render(request, "chat/chat_ai.html")

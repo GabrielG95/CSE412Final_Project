@@ -11,6 +11,9 @@ urlpatterns = [
         path('get_messages/', views.get_messages, name="get_messages"),
         path('create_username/', views.set_username, name="create_username"),
         path('random_username/', views.random_username, name='random_username'),
+        path('register/', views.register_view, name='register'),
+        path('login/', views.login_view, name='login'),
+        path('logout/', views.logout_view, name='logout'),
     ]
 
 
