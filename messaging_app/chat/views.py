@@ -9,6 +9,8 @@ from .models import Message
 # This is where we define the function of where to go when we go to a certain template 
 
 def home(request):
+    if "chat_username" in request.session:
+        del request.session["chat_username"]
     return render(request, "chat/home.html")
 
 def chatroom_view(request):
