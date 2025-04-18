@@ -30,7 +30,7 @@ def chatroom_view(request):
 def get_messages(request):
     messages = Message.objects.all().order_by('date_posted')
     data = [{
-        "author": message.author.username,
+        "author": message.author.username if message.author else "Anonymous",
         "content": message.content,
         "date": message.date_posted.strftime("%Y-%m-%d %H:%M:%S")
     } for message in messages]

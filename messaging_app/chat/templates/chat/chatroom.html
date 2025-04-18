@@ -19,7 +19,8 @@
             </form>
         </div>
 
-        <div class="chat-containers">
+        <!-- <div class="chat-containers"> -->
+        <div id="chat-box" class="chat-containers">
             {% for message in content %}
                 <div class="message mb-2">
                     <strong>{{ message.user.username }}</strong> {{ message.content }} <br>
