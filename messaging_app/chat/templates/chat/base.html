@@ -32,11 +32,15 @@
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
-                        <a class="nav-item nav-link" href="{% url 'create_username' %}">Create Username</a>
-                        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-                        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-                        <a class="nav-item nav-link" href="{% url 'random_username' %}">Random Username</a>
+                        {% if user.is_authenticated %}
+                            <a class="nav-item nav-link" href="#">Welcome, {{ user.username }}</a>
+                            <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+                        {% else %}
+                            <a class="nav-item nav-link" href="{% url 'create_username' %}">Create Username</a>
+                            <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                            <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                            <a class="nav-item nav-link" href="{% url 'random_username' %}">Random Username</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
