@@ -10,7 +10,7 @@
 <body style="background-color: #800080;">
     <div class="container mt-4">
         <h2 style="text-align: center;">Chatroom</h2>
-        
+
         <div class="mb-4">
             <form method="post" class="d-flex align-items-center gap-2">
                 {% csrf_token %}
@@ -23,7 +23,7 @@
         <div id="chat-box" class="chat-containers">
             {% for message in content %}
                 <div class="message mb-2">
-                    <strong>{{ message.user.username }}</strong> {{ message.content }} <br>
+                    <strong>{{ message.username }}</strong> {{ message.content }} <br>
                     <small>{{ message.date_posted}}</small>
                 </div>
             {% endfor %}

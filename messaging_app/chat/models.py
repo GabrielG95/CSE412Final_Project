@@ -17,6 +17,7 @@ class Message(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     # on_delete will remove the message when user deletes account
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    username = models.CharField(max_length=30, default="Anonymous")
 
 
 

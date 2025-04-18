@@ -32,7 +32,7 @@
                     </div>
                     <!-- Navbar Right Side -->
                     <div class="navbar-nav">
-                        <a class="nav-item nav-link" href="#">Create Account</a>
+                        <a class="nav-item nav-link" href="{% url 'create_username' %}">Create Username</a>
                         <a class="nav-item nav-link" href="#">Login</a>
                         <a class="nav-item nav-link" href="#">Random Username</a>
                     </div>
@@ -47,7 +47,7 @@
             </div>
             <div class="col-md-4">
                 <div class="content-section">
-                    <h3>Our Sidebar</h3>
+                    <h3>Chatroom Options</h3>
                     <div class="list-group">
                         <a href="{% url 'chatroom' %}" class="list-group-item list-group-item-action">Chatroom</a>
                         <a href="{% url 'chat_ai' %}" class="list-group-item list-group-item-action">Chat with AI</a>

@@ -9,6 +9,7 @@ urlpatterns = [
         path("contacts/", views.contacts_view, name="contacts"),
         path("settings/", views.settings_view, name="settings"),
         path('get_messages/', views.get_messages, name="get_messages"),
+        path('create_username/', views.set_username, name="create_username"),
     ]
 
 
