@@ -1,21 +1,59 @@
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username" required><br>
-    <div style="position: relative;">
-        <input type="password" id="password" name="password" placeholder="Password" required>
-        <span onclick="togglePassword()" style="position: absolute; right: 10px; top: 8px; cursor: pointer;">👁️</span>
-    </div>
+{% extends 'chat/base.html' %} 
+{% block content %}
+<div class="container mt-5">
+    <h2>Login</h2>
 
-    <button type="submit">Login</button>
-</form>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info alert-dismissable fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="username" placeholder="Username" class="form-control" required>
+        </div>
+
+        <div class="form-group" style="position: relative;">
+            <input type="password" id="password" name="password" placeholder="Password1" class="form-control" required>
+            <span onclick="togglePassword()" style="position: absolute; right: 15px; top: 10px; cursor: pointer;">👁️</span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
 
 <script>
     function togglePassword(){
         const passwordInput = document.getElementById("password");
-        if (passwordInput.type === "password"){
-            passwordInput.type = "text";
-        } else {
-            passwordInput.type = "password";
-        }
+        passwordInput.type = passwordInput.type === "password" ? "text": "password";
     }
 </script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

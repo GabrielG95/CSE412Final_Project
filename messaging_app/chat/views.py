@@ -97,9 +97,13 @@ def login_view(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(request, username=username, password=password)
-        if user:
+
+        if user is not None:
             login(request, user)
+            messages.success(request, "Login successful!")
             return redirect('chatroom')
+        else:
+            messages.error(request, "Invalid username or password.")
     return render(request, "chat/login.html")
 
 def logout_view(request):
