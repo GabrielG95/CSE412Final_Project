@@ -101,7 +101,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             messages.success(request, "Login successful!")
-            return redirect('chatroom')
+            return redirect('chat-home')
         else:
             messages.error(request, "Invalid username or password.")
     return render(request, "chat/login.html")
