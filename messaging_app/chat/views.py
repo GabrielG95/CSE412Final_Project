@@ -81,8 +81,9 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('login')
+            user = form.save()
+            login(request, user)
+            return redirect('chatroom')
     else:
         form = RegisterForm()
     return render(request, "chat/register.html", {'form': form})

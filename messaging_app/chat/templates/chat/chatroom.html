@@ -11,6 +11,14 @@
     <div class="container mt-4">
         <h2 style="text-align: center;">Chatroom</h2>
 
+        {% if user.is_authenticated %}
+            <p class="text-light text-center">Logged in as: <strong> {{ user.username }}</strong></p>
+        {% elif chat_username %}
+            <p class="text-light text-center">Username: <strong> {{ chat_username }}</strong></p>
+        {% else %}
+            <p class="text-light text-center">Username: <strong>Anonymous</strong></p>
+        {% endif %}
+
         <div class="mb-4">
             <form method="post" class="d-flex align-items-center gap-2">
                 {% csrf_token %}
