@@ -9,9 +9,9 @@ import random
 import string
 
 """
+    - Create your views here.
+    - This is where we define the function of where to go when we go to a certain template 
 """
-# Create your views here.
-# This is where we define the function of where to go when we go to a certain template 
 
 def home(request):
     if "chat_username" in request.session:
@@ -43,7 +43,6 @@ def chatroom_view(request):
     return render(request, "chat/chatroom.html", { "form": form,
                                                   "content": messages,
                                                   "chat_username": request.session.get('chat_username', 'Anonymous') })
-
 
 # Get messages to update in real time
 def get_messages(request):
