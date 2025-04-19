@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .models import User
@@ -83,7 +84,10 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('chatroom')
+            messages.success(request, "Registration complete!")
+            return redirect('chat-home')
+        else:
+            print(form.errors)
     else:
         form = RegisterForm()
     return render(request, "chat/register.html", {'form': form})
