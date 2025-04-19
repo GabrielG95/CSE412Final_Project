@@ -108,7 +108,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('chat-room')
+    return redirect('chat-home')
 
 def chat_ai_view(request):
     return render(request, "chat/chat_ai.html")
