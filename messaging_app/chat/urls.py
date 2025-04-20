@@ -14,7 +14,9 @@ urlpatterns = [
         path('register/', views.register_view, name='register'),
         path('login/', views.login_view, name='login'),
         path('logout/', views.logout_view, name='logout'),
-        path('clear-random/', views.clear_random_username, name='clear-random')
+        path('clear-random/', views.clear_random_username, name='clear-random'),
+        path('friend-request/send/<int:user_id>/', views.send_friend_request, name='send-friend-request'),
+        path('friend-request/respond/<int:request_id>/<str:response>/', views.respond_to_request, name='respond-friend-request'),
     ]
 
 
