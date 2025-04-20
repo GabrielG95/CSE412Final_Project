@@ -17,7 +17,11 @@
     <header class="site-header">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top pt-0">
             <div class="container">
+                {% if request.path != "/" %}
+                    <a href="{% url 'chat-home' %}" class="btn btn-sm btn-outline-light mr-3">Back</a>
+                {% endif %}
                 <a class="navbar-brand mr-4" href="{% url 'chat-home' %}">Django Chatters</a>
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
