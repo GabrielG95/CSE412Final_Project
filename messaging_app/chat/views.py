@@ -117,3 +117,8 @@ def contacts_view(request):
 
 def settings_view(request):
     return render(request, "chat/settings.html")
+
+def clear_random_username(request):
+    if "chat_username" in request.session:
+        del request.session["chat_username"]
+    return redirect('chat-home')
