@@ -110,7 +110,8 @@ def login_view(request):
 @login_required
 def send_friend_request(request, user_id):
     to_user = get_object_or_404(User, id=user_id)
-    FriendRequest.objects.get_or_create(from_user=request.user, to_user=to_user)
+    if to_user != request.user:
+        FriendRequest.objects.get_or_create(from_user=request.user, to_user=to_user)
     return redirect('chatroom')
 
 @login_required
