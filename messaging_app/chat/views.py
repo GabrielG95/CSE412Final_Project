@@ -49,7 +49,8 @@ def chatroom_view(request):
 def get_messages(request):
     messages = Message.objects.all().order_by('date_posted')
     data = [{
-        "author": message.username,
+        "author_name": message.username,
+        "author_id": message.author.id if message.author else None,
         "content": message.content,
         "date": message.date_posted.strftime("%Y-%m-%d %H:%M:%S")
     } for message in messages]
@@ -132,7 +133,7 @@ def chat_ai_view(request):
 @login_required
 def contacts_view(request):
     friends = User.objects.filter(
-        sendt_request__to_user=request.user, sent_requests__is_accepted=True
+        send_request__to_user=request.user, sent_requests__is_accepted=True
     ) | User.objects.filter(
         received_requests__from_user=request.user, received_requests__is_accepted=True
     )

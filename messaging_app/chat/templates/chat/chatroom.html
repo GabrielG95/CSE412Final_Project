@@ -42,8 +42,8 @@
         <div id="chat-box" class="chat-containers">
             {% for message in content %}
                 <div class="message mb-2">
-                    {% if user.is_authenticated and message.author %}
-                        <a href="{% url 'send-friend-request' message.author.id %}" class="text-warning">
+                    {% if user.is_authenticated and message.author and message.author != user %}
+                        <a href="#" class="text-warning" onclick="openFriendModal('{{ message.author.id }}', '{{ message.username }}')">
                             {{ message.username }}
                         </a>
                     {% else %}
@@ -56,6 +56,29 @@
         </div>
     </div>
 
+    <!-- Friend Request Modal -->
+    <div class="modal fade" id="friendModal" tabindex="-1" aria-labelledby="friendModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="post" id="friendForm">
+                {% csrf_token %}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="friendModalLabel">Add Friend</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Do you want to add <strong id="friendName"></strong> as a friend?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Friend</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Real time message fetching -->
     <script>
         function fetchMessages() {
             fetch('/get_messages/')
@@ -64,9 +87,14 @@
                     const container = document.getElementById('chat-box');
                     container.innerHTML = '';
                     data.messages.forEach(msg => {
+                        const isClickable = msg.author_id && msg.author_id != "{{ user.id }}";
+                        const nameHTML = isClickable
+                            ? `<a href="#" class="text-warning" onclick="openFriendModal('${msg.author_id}', '${msg.author_name}')">${msg.author_name}</a>`
+                            : `<strong>${msg.author_name}</strong>`;
+
                         container.innerHTML += `
                         <div class ="message mb-2">
-                            <strong>${msg.author}</strong>: ${msg.content} <br>
+                            <strong>${nameHTML}</strong>: ${msg.content} <br>
                             <small>${msg.date}</small>
                         </div>
                     `;
@@ -75,6 +103,13 @@
         }
         setInterval(fetchMessages, 2000);
         fetchMessages();
+
+        // Modal Control 
+        function openFriendModal(userID, username){
+            const modal = new bootstrap.Modal(document.getElementById('friendModal'));
+            document.getElementById('friendName').innerText = username;
+            document.getElementById('friendForm').action = '/friend-request/send/${userId}/';
+        }
     </script>
 </body>
 </html>
