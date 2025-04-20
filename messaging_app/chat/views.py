@@ -1,8 +1,9 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from .models import User
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import User, FriendRequest
 from .forms import MessageForm, UsernameForm, RegisterForm
 from .models import Message
 import random
@@ -105,6 +106,22 @@ def login_view(request):
             messages.error(request, "Invalid username or password.")
     return render(request, "chat/login.html")
 
+@login_required
+def send_friend_request(request, user_id):
+    to_user = get_object_or_404(User, id=user_id)
+    FriendRequest.objects.get_or_create(from_user=request.user, to_user=to_user)
+    return redirect('chatroom')
+
+@login_required
+def respond_to_request(request, request_id, response):
+    friend_request = get_object_or_404(FriendRequest, id=request_id, to_user=request.user)
+    if response == 'accept':
+        friend_request.is_accepted = True
+        friend_request.save()
+    else:
+        friend_request.delete()
+    return redirect('contacts')
+
 def logout_view(request):
     logout(request)
     return redirect('chat-home')
@@ -112,8 +129,14 @@ def logout_view(request):
 def chat_ai_view(request):
     return render(request, "chat/chat_ai.html")
 
+@login_required
 def contacts_view(request):
-    return render(request, "chat/contacts.html")
+    friends = User.objects.filter(
+        sendt_request__to_user=request.user, sent_requests__is_accepted=True
+    ) | User.objects.filter(
+        received_requests__from_user=request.user, received_requests__is_accepted=True
+    )
+    return render(request, "chat/contacts.html", {"friends": friends.distinct()})
 
 def settings_view(request):
     return render(request, "chat/settings.html")

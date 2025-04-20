@@ -42,8 +42,15 @@
         <div id="chat-box" class="chat-containers">
             {% for message in content %}
                 <div class="message mb-2">
-                    <strong>{{ message.username }}</strong> {{ message.content }} <br>
-                    <small>{{ message.date_posted}}</small>
+                    {% if user.is_authenticated and message.author %}
+                        <a href="{% url 'send-friend-request' message.author.id %}" class="text-warning">
+                            {{ message.username }}
+                        </a>
+                    {% else %}
+                        <strong>{{ message.username }}</strong>
+                    {% endif %}
+                    {{ message.content }} <br>
+                    <small>{{ message.date_posted }}</small>
                 </div>
             {% endfor %}
         </div>
