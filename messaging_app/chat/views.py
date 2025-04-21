@@ -120,6 +120,7 @@ def respond_to_request(request, request_id, response):
     if response == 'accept':
         friend_request.is_accepted = True
         friend_request.save()
+        FriendRequest.objects.get_or_create(from_user=request.user, to_user=friend_request.from_user, is_accepted=True)
     else:
         friend_request.delete()
     return redirect('contacts')
@@ -134,8 +135,7 @@ def chat_ai_view(request):
 @login_required
 def contacts_view(request):
     friends = User.objects.filter(
-        sent_requests__to_user=request.user, sent_requests__is_accepted=True
-    ) | User.objects.filter(
+        sent_requests__to_user=request.user, sent_requests__is_accepted=True,
         received_requests__from_user=request.user, received_requests__is_accepted=True
     )
 
