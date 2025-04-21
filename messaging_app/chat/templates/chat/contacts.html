@@ -1,25 +1,64 @@
-<h4 class="text-light mt-4">Friends List</h4>
-<ul class="list-group">
-    {% for friend in friends %}
-        <li class="list-group-item">
-            {{ friend.username }}
-        </li>
-    {% empty %}
-        <li class="list-group-item">You don't have any friends yet.</li>
-    {% endfor %}
-</ul>
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>Contacts</title>
+    <link rel="stylesheet" href="{% static 'chat/main.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="background-color: #800080;">
+    <div class="container mt-5">
+        <h2 class="text-center text-light mb-4">Your Contacts</h2>
 
-<h4 class="text-light mt-4">Pending Friend Requests</h4>
-<ul class="list-group">
-    {% for request in pending_requests %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ request.from_user.username }}
-            <div>
-                <a href="{% url 'respond-friend-request' request.id 'accept' %}" class="btn btn-success btn-sm">Accept</a>
-                <a href="{% url 'respond-friend-request' request.id 'decline' %}" class="btn btn-danger btn-sm">Decline</a>
+        <!-- Friends List -->
+         <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                Friends List
             </div>
-        </li>
-        {% empty %}
-            <li class="list-group-item">No pending requests</li>
-        {% endfor %}
-</ul>
+            <ul class="list-group list-group-flush">
+                {% for friend in friends %}
+                    <li class="list-group-item">
+                        <i class="bi bi-person-fill text-success me-2"></i> {{ friend.username }}
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">You don't have any friends yet.</li>
+                {% endfor %}
+            </ul>
+         </div>
+
+         <!-- Pending Friend Requests-->
+          <div class="card">
+            <div class="card-header bg-warning text-dark">
+                Pending Friend Requests
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for request in pending_requests %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-person-dash me-2"></i>{{ request.from_user.username }}</span>
+                        <div class="btn-group">
+                            <a href="{% url 'respond-friend-request' request.id 'accept' %}" class="btn btn-sm btn-success">Accept</a>
+                            <a href="{% url 'respond-friend-request' request.id 'decline' %}" class="btn btn-sm btn-danger">Decline</a>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">No pending requests.</li>
+                {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <script scr="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
