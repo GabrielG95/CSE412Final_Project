@@ -92,9 +92,10 @@
                     container.innerHTML = '';
                     data.messages.forEach(msg => {
                         const isClickable = msg.author_id && msg.author_id != "{{ user.id }}";
+                        const colorStyle = `style="color: ${msg.color}"`;
                         const nameHTML = isClickable
-                            ? `<a href="#" class="text-warning" onclick="openFriendModal('${msg.author_id}', '${msg.author_name}', event)">${msg.author_name}</a>`
-                            : `<strong>${msg.author_name}</strong>`;
+                            ? `<a href="#" ${colorStyle} onclick="openFriendModal('${msg.author_id}', '${msg.author_name}', event)">${msg.author_name}</a>`
+                            : `<strong> ${colorStyle}>${msg.author_name}</strong>`;
 
                         container.innerHTML += `
                         <div class ="message mb-2">

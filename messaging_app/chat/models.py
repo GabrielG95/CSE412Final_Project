@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
+from django.dispatch import receiver
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
 """
 - We need to think about what we actually want to save to out db.
@@ -28,10 +30,12 @@ class FriendRequest(models.Model):
     class Meta:
         unique_together = ('from_user', 'to_user')
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    username_color = models.CharField(max_length=30, default='black')
 
-
-
-
-
-
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
 

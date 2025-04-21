@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import User, FriendRequest
 from .forms import MessageForm, UsernameForm, RegisterForm
-from .models import Message
+from .models import Message, Profile
 import random
 import string
 
@@ -48,12 +48,18 @@ def chatroom_view(request):
 # Get messages to update in real time
 def get_messages(request):
     messages = Message.objects.all().order_by('date_posted')
-    data = [{
-        "author_name": message.username,
-        "author_id": message.author.id if message.author else None,
-        "content": message.content,
-        "date": message.date_posted.strftime("%Y-%m-%d %H:%M:%S")
-    } for message in messages]
+    data = []
+    for message in messages:
+        color = "#000000"
+        if message.author and hasattr(message.author, 'profile'):
+            color = message.author.profile.username_color
+        data.append({
+            "author_name": message.username,
+            "author_id": message.author.id if message.author else None,
+            "content": message.content,
+            "date": message.date_posted.strftime("%Y-%m-%d %H:%M:%S"),
+            "color": color
+        })
     return JsonResponse({"messages": data})
 
 # Set username for chatteres 
@@ -145,6 +151,17 @@ def contacts_view(request):
                   {"friends": friends.distinct(),
                    "pending_requests": pending_requests
                    })
+
+@login_required
+def update_username_color(request):
+    if request.method == 'POST':
+        new_color = request.POST.get('color')
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+        profile.username_color = new_color
+        profile.save()
+        messages.success(request, "Username color updated!")
+        return redirect('settings')
+    return redirect('settings')
 
 def settings_view(request):
     return render(request, "chat/settings.html")
