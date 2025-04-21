@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import User, FriendRequest
-from .forms import MessageForm, UsernameForm, RegisterForm
+from .forms import MessageForm, UsernameForm, RegisterForm, UsernameColorForm
 from .models import Message, Profile
 import random
 import string
@@ -164,6 +164,14 @@ def update_username_color(request):
     return redirect('settings')
 
 def settings_view(request):
+    if request.method == 'POST':
+        selected_color = request.POST.get('color')
+        if selected_color:
+            profile, created = Profile.objects.get_or_create(user=request.user)
+            profile.username_color = selected_color
+            profile.save()
+            messages.success(request, "Username color updated!")
+            return redirect('settings')
     return render(request, "chat/settings.html")
 
 def clear_random_username(request):
