@@ -58,7 +58,7 @@ def get_messages(request):
             "author_id": message.author.id if message.author else None,
             "content": message.content,
             "date": message.date_posted.strftime("%Y-%m-%d %H:%M:%S"),
-            "color": color
+            "color": message.author.profile.username_color if message.author and hasattr(message.author, "profile") else "#000000"
         })
     return JsonResponse({"messages": data})
 
