@@ -134,11 +134,17 @@ def chat_ai_view(request):
 @login_required
 def contacts_view(request):
     friends = User.objects.filter(
-        send_request__to_user=request.user, sent_requests__is_accepted=True
+        sent_requests__to_user=request.user, sent_requests__is_accepted=True
     ) | User.objects.filter(
         received_requests__from_user=request.user, received_requests__is_accepted=True
     )
-    return render(request, "chat/contacts.html", {"friends": friends.distinct()})
+
+    pending_requests = FriendRequest.objects.filter(to_user=request.user, is_accepted=False)
+
+    return render(request, "chat/contacts.html",
+                  {"friends": friends.distinct(),
+                   "pending_requests": pending_requests
+                   })
 
 def settings_view(request):
     return render(request, "chat/settings.html")

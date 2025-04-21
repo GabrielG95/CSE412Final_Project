@@ -1,0 +1,14 @@
+<h4 class="text-light mt-4">Pending Friend Requests</h4>
+<ul class="list-group">
+    {% for request in pending_requests %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ request.from_user.username }}
+            <div>
+                <a href="{% url 'respond-friend-request' request.id 'accept' %}" class="btn btn-success btn-sm">Accept</a>
+                <a href="{% url 'respond-friend-request' request.id 'decline' %}" class="btn btn-danger btn-sm">Decline</a>
+            </div>
+        </li>
+        {% empty %}
+            <li class="list-group-item">No pending requests</li>
+        {% endfor %}
+</ul>
