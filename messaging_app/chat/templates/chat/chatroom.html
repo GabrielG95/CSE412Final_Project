@@ -43,21 +43,22 @@
         </div>
 
         <!-- <div class="chat-containers"> -->
-        <div id="chat-box" class="chat-containers"
-            style="max-height: 800px; overflow-y: auto; background-color: #ffffff; padding: 10px; border-radius: 5px;">
-            {% for message in content %}
-                <div class="message mb-2">
-                    {% if user.is_authenticated and message.author and message.author != user %}
-                        <a href="#" class="text-warning" onclick="openFriendModal('{{ message.author.id }}', '{{ message.username }}')">
-                            {{ message.username }}
-                        </a>
-                    {% else %}
-                        <strong>{{ message.username }}</strong>
-                    {% endif %}
-                    {{ message.content }} <br>
-                    <small>{{ message.date_posted }}</small>
-                </div>
-            {% endfor %}
+        <div class="chat-containers">
+            <div id="chat-box">
+                {% for message in content %}
+                    <div class="message mb-2">
+                        {% if user.is_authenticated and message.author and message.author != user %}
+                            <a href="#" class="text-warning" onclick="openFriendModal('{{ message.author.id }}', '{{ message.username }}')">
+                                {{ message.username }}
+                            </a>
+                        {% else %}
+                            <strong>{{ message.username }}</strong>
+                        {% endif %}
+                        {{ message.content }} <br>
+                        <small>{{ message.date_posted }}</small>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
         <button id="scrollToBottomBtn"
             style="display: none; position: fixed; bottom: 100px; right: 20px; z-index: 9999;"
