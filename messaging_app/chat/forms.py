@@ -18,7 +18,7 @@ class MessageForm(forms.ModelForm):
 # So users can select a username to display
 class UsernameForm(forms.Form):
     username = forms.CharField(max_length=30, label='Enter your username',
-                               widget=forms.TextInput(attrs={'style': 'color: #ffffff;'}))
+                               widget=forms.TextInput(attrs={'style': 'color: #000000;'}))
 
 class UsernameColorForm(forms.ModelForm):
     class Meta:
