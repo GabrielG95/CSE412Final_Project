@@ -90,11 +90,19 @@
                 .then(data => {
                     const container = document.getElementById('chat-box');
                     container.innerHTML = '';
+
+                    const isLoggedIn = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
+
                     data.messages.forEach(msg => {
-                        const isClickable = msg.author_id && msg.author_id != "{{ user.id }}";
-                        const nameHTML = isClickable
-                            ? `<a href="#" style="color: ${msg.color};" onclick="openFriendModal('${msg.author_id}', '${msg.author_name}', event)">${msg.author_name}</a>`
-                            : `<strong style="color: ${msg.color};">${msg.author_name}</strong>`;
+                        const isCurrentUser = msg.author_id == "{{ user.id }}";
+                        let nameHTML;
+                        if(isCurrentUser){
+                            nameHTML = `<strong style="color: ${msg.color};">${msg.author_name}</strong>`
+                        } else if (isLoggedIn){
+                            nameHTML =`<a href="#" style="color: ${msg.color};" onclick="openFriendModal('${msg.author_id}', '${msg.author_name}', event); return false;">${msg.author_name}</a>`;
+                        } else {
+                            nameHTML = `<strong style="color: ${msg.color};">${msg.author_name}</strong>`;
+                        }
 
                         container.innerHTML += `
                         <div class ="message mb-2">
@@ -110,13 +118,15 @@
 
         // Modal Control 
         function openFriendModal(userId, username, event){
-
-            console.log("Modal triggered for", userId, username);
             if (event) event.preventDefault();
 
-            const modal = new bootstrap.Modal(document.getElementById('friendModal'));
+            console.log("Modal triggered for", userId, username);
+
+            const modelE1 = document.getElementById('friendModal');
             document.getElementById('friendName').innerText = username;
             document.getElementById('friendForm').action = `/friend-request/send/${userId}/`;
+
+            const modal = bootstrap.Modal.getOrCreateInstance(modelE1);
             modal.show();
         }
     </script>
