@@ -43,7 +43,8 @@
         </div>
 
         <!-- <div class="chat-containers"> -->
-        <div id="chat-box" class="chat-containers">
+        <div id="chat-box" class="chat-containers"
+            style="max-height: 800px; overflow-y: auto; background-color: #ffffff; padding: 10px; border-radius: 5px;">
             {% for message in content %}
                 <div class="message mb-2">
                     {% if user.is_authenticated and message.author and message.author != user %}
@@ -58,6 +59,11 @@
                 </div>
             {% endfor %}
         </div>
+        <button id="scrollToBottomBtn"
+            style="display: none; position: fixed; bottom: 100px; right: 20px; z-index: 9999;"
+            class="btn btn-secondary btn-sm">
+            ↓ New Messages
+        </button>
     </div>
 
     <!-- Friend Request Modal -->
@@ -82,9 +88,18 @@
         </div>
     </div>
 
+
+
+
+
     <!-- Real time message fetching -->
     <script>
+        const scrollBtn = document.getElementById('scrollToBottomBtn');
+        const chatBox = document.getElementById('chat-box');
+
         function fetchMessages() {
+            const wasNearBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 100;
+
             fetch('/get_messages/')
                 .then(response=> response.json())
                 .then(data => {
@@ -112,8 +127,23 @@
                         </div>
                     `;
                 });
+
+                if(wasNearBottom) {
+                    container.scrollTop = container.scrollHeight;
+                }
             });
         }
+
+        chatBox.addEventListener('scroll', () => {
+            const threshold = 100;
+            const isAtBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < threshold;
+            scrollBtn.style.display = isAtBottom ? 'none': 'block';
+        });
+
+        scrollBtn.addEventListener('click', () => {
+            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+        });
+
         setInterval(fetchMessages, 2000);
         fetchMessages();
 

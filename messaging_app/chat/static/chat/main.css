@@ -94,6 +94,8 @@ a.article-title:hover {
     /* background-color: #000000; */
     border-radius: 8px;
     margin: 0 auto 100px auto;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .message {
