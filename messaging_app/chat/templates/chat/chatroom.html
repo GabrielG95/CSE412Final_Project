@@ -96,10 +96,11 @@
                     data.messages.forEach(msg => {
                         const isCurrentUser = msg.author_id == "{{ user.id }}";
                         let nameHTML;
+
                         if(isCurrentUser){
                             nameHTML = `<strong style="color: ${msg.color};">${msg.author_name}</strong>`
-                        } else if (isLoggedIn){
-                            nameHTML =`<a href="#" style="color: ${msg.color};" onclick="openFriendModal('${msg.author_id}', '${msg.author_name}', event); return false;">${msg.author_name}</a>`;
+                        } else if (isLoggedIn && msg.author_id) {
+                            nameHTML = `<a href="#" style="color: ${msg.color};" onclick="openFriendModal('${msg.author_id}', '${msg.author_name}', event); return false;">${msg.author_name}</a>`;
                         } else {
                             nameHTML = `<strong style="color: ${msg.color};">${msg.author_name}</strong>`;
                         }
