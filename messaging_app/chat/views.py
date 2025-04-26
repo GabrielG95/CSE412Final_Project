@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django_ai_assistant import AIAssistant
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -8,6 +9,7 @@ from .forms import MessageForm, UsernameForm, RegisterForm, UsernameColorForm
 from .models import Message, Profile
 import random
 import string
+import os
 
 """
     - Create your views here.
@@ -136,6 +138,16 @@ def logout_view(request):
     return redirect('chat-home')
 
 def chat_ai_view(request):
+    assistant = AIAssistant(
+        api_key=os.getenv("OPENAI_API_KEY"),
+        model="gpt-3.5-turbo"
+    )
+
+    if request.method == 'POST':
+        user_input = request.POST.get('user_input')
+        response = assistant.run(user_input)
+        return render(request, 'chat/chat_ai.html', {'response': response, 'user_input': user_input})
+
     return render(request, "chat/chat_ai.html")
 
 @login_required
