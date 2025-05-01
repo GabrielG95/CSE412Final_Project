@@ -91,10 +91,12 @@
                             }
 
                             chatBox.innerHTML += `
-                                <div class="message mb-2">
-                                    ${nameHTML}
-                                    <div>${msg.content}</div>
-                                    <small>${msg.timestamp}</small>
+                                <div class="card mb-3" style="border-radius: 15px;">
+                                    <div class="card-body text-left">
+                                        <strong style="color: ${msg.color};">${msg.username}</strong>
+                                        <p class="mb-1">${msg.content}</p>
+                                        <small class="text-muted">${msg.timestamp}</small>
+                                    </div>
                                 </div>
                             `;
                         });
