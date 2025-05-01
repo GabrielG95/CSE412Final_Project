@@ -201,7 +201,7 @@ def thread_detail(request, thread_id):
             )
             return redirect('thread_detail', thread_id=thread.id)
         
-        return render(request, 'chat/thread_detail.html', {'thread': thread, 'messages': messages})
+    return render(request, 'chat/thread_detail.html', {'thread': thread, 'messages': messages})
     
 def create_thread(request):
     if request.method == 'POST':
@@ -210,4 +210,4 @@ def create_thread(request):
             created_by = request.user if request.user.is_authenticated else None
             ChatThread.objects.create(title=title, created_by=created_by)
             return redirect('chat_threads')
-        return redirect(request, 'chat/create_threads.html')
+    return render(request, 'chat/create_thread.html')
