@@ -1,11 +1,13 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django_ai_assistant import AIAssistant
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import User, FriendRequest
+from .models import User, FriendRequest, ChatThread
 from .forms import MessageForm, UsernameForm, RegisterForm, UsernameColorForm
+from .ai_assistant import MyCustomAssistant
 from .models import Message, Profile
 import random
 import string
@@ -138,9 +140,8 @@ def logout_view(request):
     return redirect('chat-home')
 
 def chat_ai_view(request):
-    assistant = AIAssistant(
-        api_key=os.getenv("OPENAI_API_KEY"),
-        model="gpt-3.5-turbo"
+    assistant = MyCustomAssistant(
+        api_key=os.getenv('OPENAI_API_KEY')
     )
 
     if request.method == 'POST':
@@ -190,3 +191,36 @@ def clear_random_username(request):
     if "chat_username" in request.session:
         del request.session["chat_username"]
     return redirect('chat-home')
+
+def chat_threads(request):
+    threads = ChatThread.objects.all().order_by('-created_at')
+    return render(request, 'chat/chat_threads.html', {'threads': threads})
+
+def thread_detail(request, thread_id):
+    thread = get_object_or_404(ChatThread, id=thread_id)
+    messages = thread.messages.order_by('date_posted')
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            username = request.user.username if request.user.is_authenticated else request.session.get("chat_username", "Anonymous")
+            author = request.user if request.user.is_authenticated else None
+
+            Message.objects.create(
+                content = content,
+                author = author,
+                username = username,
+                thread = thread
+            )
+            return redirect('thread_detail', thread_id=thread.id)
+        
+        return render(request, 'chat/thread_detail.html', {'thread': thread, 'messages': messages})
+    
+def create_thread(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        if title:
+            created_by = request.user if request.user.is_authenticated else None
+            ChatThread.objects.create(title=title, created_by=created_by)
+            return redirect('chat_threads')
+        return redirect(request, 'chat/create_threads.html')

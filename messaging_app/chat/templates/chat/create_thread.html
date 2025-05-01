@@ -1,0 +1,13 @@
+{% extends 'chat/base.html' %}
+
+{% block content %}
+<h2 class="mb-4">Create Thread</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        <input type="text" name="title" class="form-control" placeholder="Enter thread title..." required>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Thread</button>
+</form>
+{% endblock %}

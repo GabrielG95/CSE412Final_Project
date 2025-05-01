@@ -11,6 +11,13 @@ from django.db.models.signals import post_save
 """
 
 # Create your models here.
+class ChatThread(models.Model):
+    title = models.CharField(max_length=225)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
 
 class Message(models.Model):
     # .TextField is for unlimited messaging input
@@ -20,6 +27,7 @@ class Message(models.Model):
     # on_delete will remove the message when user deletes account
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     username = models.CharField(max_length=30, default="Anonymous")
+    thread = models.ForeignKey(ChatThread, on_delete=models.CASCADE, related_name='messages', null=True, blank=True)
 
 class FriendRequest(models.Model):
     from_user = models.ForeignKey(User, related_name='sent_requests', on_delete=models.CASCADE)
@@ -38,4 +46,10 @@ class Profile(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+
+
+
+
+
 

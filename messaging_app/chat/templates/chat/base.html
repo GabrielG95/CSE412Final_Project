@@ -67,7 +67,7 @@
                     <h3 style="color: #ffffff;">Chatroom Options</h3>
                     <div class="list-group">
                         <a href="{% url 'chatroom' %}" class="list-group-item list-group-item-action">Chatroom</a>
-                        <a href="{% url 'chat_ai' %}" class="list-group-item list-group-item-action">Chat with AI</a>
+                        <a href="{% url 'chat_threads' %}" class="list-group-item list-group-item-action">Chat Threads</a>
                         {% if user.is_authenticated %}
                             <a href="{% url 'contacts' %}" class="list-group-item list-group-item-action">Contacts</a>
                             <a href="{% url 'settings' %}" class="list-group-item list-group-item-action">Settings</a>

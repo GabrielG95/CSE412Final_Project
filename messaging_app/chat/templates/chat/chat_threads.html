@@ -1,0 +1,43 @@
+{% extends 'chat/base.html' %}
+
+{% block content %}
+<h2 class="mb-4">Chatroom Threads</h2>
+
+<a href="{% url 'create_thread' %}" class="btn btn-success mb-4">+ Add Thread</a>
+
+<div class="list-group">
+    {% for thread in threads %}
+        <a hred="{% url 'thread_detail' thread.id}" class="list-group-item list-group-item-action">
+            {{ thread.title }}
+        </a>
+    {% empty %}
+        <p class="text-muted">No threads available yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
