@@ -7,7 +7,6 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import User, FriendRequest, ChatThread
 from .forms import MessageForm, UsernameForm, RegisterForm, UsernameColorForm
-from .ai_assistant import MyCustomAssistant
 from .models import Message, Profile
 import random
 import string
@@ -138,18 +137,6 @@ def respond_to_request(request, request_id, response):
 def logout_view(request):
     logout(request)
     return redirect('chat-home')
-
-def chat_ai_view(request):
-    assistant = MyCustomAssistant(
-        api_key=os.getenv('OPENAI_API_KEY')
-    )
-
-    if request.method == 'POST':
-        user_input = request.POST.get('user_input')
-        response = assistant.run(user_input)
-        return render(request, 'chat/chat_ai.html', {'response': response, 'user_input': user_input})
-
-    return render(request, "chat/chat_ai.html")
 
 @login_required
 def contacts_view(request):
