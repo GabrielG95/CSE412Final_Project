@@ -13,7 +13,7 @@ from django.db.models.signals import post_save
 # Create your models here.
 class ChatThread(models.Model):
     title = models.CharField(max_length=225)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
