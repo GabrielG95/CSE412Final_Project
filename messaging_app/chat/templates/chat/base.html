@@ -62,6 +62,8 @@
             <div class="col-md-8">
                 {% block content %}{% endblock %}
             </div>
+
+            {% if request.resolver_match.url_name != "thread_detail" %}
             <div class="col-md-4">
                 <div class="content-section" style="background-color: #414141;">
                     <h3 style="color: #ffffff;">Chatroom Options</h3>
@@ -75,6 +77,7 @@
                     </ul>
                 </div>
             </div>
+            {% endif %}
         </div>
     </main>
 

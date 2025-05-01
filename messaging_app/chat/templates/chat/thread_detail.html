@@ -1,34 +1,165 @@
-{% extends 'chat/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ thread.title }}</title>
+        <link rel="stylesheet" href="{% static 'chat/main.css' %}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body style="background-color: #800080;">
+        <div class="container mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a href="{% url 'chat_threads' %}" class="btn btn-outline-light">Back</a>
+                <h2 class="text-center flex-grow-1 text-white" style="margin: 0;">{{ thread.title }}</h2>
+                <div style="width: 80px;"></div>
+            </div>
 
-{% block content %}
-<h2 class="mb-4">{{ thread.title }}</h2>
+            {% if user.is_authenticated %}
+                <p class="text-light text-center">Logged in as: <strong>{{ user.username }}</strong></p>
+            {% elif request.session.chat_username %}
+                <p class="text-light text-center">Username: <strong>{{ request.session.chat_username }}</strong></p>
+            {% else %}
+                <p class="text-light text-center">Username: <strong>Anonymous</strong></p>
+            {% endif %}
 
-<div class="mb-4" style="max-height: 400px; overflow-y: auto;">
-    {% for message in messages %}
-        <div class="card mb-2">
-            <div class="card-body">
-                {% if message.author and message.author.profile %}
-                    <strong style="color: '{{ message.author.profile.username_color }}';">
-                {% else %}
-                    <strong style="color: #000;">
-                {% endif %}
-                    {{ message.username }}
-                </strong>
-                <small class="text-muted float-right">{{ message.date_posted|date:"Y-m-d H:i" }}</small>
-                <p class="mt-2">{{ message.content }}</p>
+            <div class="mb-4">
+                <form method="post" class="d-flex align-items-center gap-2">
+                    {% csrf_token %}
+                    <textarea name="content" class="form-control" rows="2" placeholder="Enter your message..." required></textarea>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            </div>
+
+            <div class="chat-containers">
+                <div id="chat-box" class="mb-4" style="max-height: 500px; overflow-y: auto;"></div>
+            </div>
+
+            <button id="scrollToBottomBtn"
+                style="display: none; position: fixed; bottom: 100px; right: 20px; z-index: 9999;"
+                class="btn btn-secondary btn-sm">
+                ↓ New Messages
+            </button>
+        </div>
+
+        <!-- Friend Request Modal -->
+        <div class="modal fade" id="friendModal" tabindex="-1" aria-labelledby="friendModalLabel" areai-hidden="true">
+            <div class="modal-dialog">
+                <form method="post" id="friendForm">
+                    {% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="friendModalLabel">Add Friend</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Do you want to add <strong id="friendName"></strong> as a friend?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Add Friend</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-    {% empty %}
-        <p class="text-muted">No messages yet. Start the conversation!</p>
-    {% endfor %}
-</div>
 
-<form method="POST">
-    {% csrf_token %}
-    <div class="form-group">
-        <textarea name="content" class="form-control" rows="3" placeholder="Enter your message..." required></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Send</button>
-</form>
-{% endblock %}
+        <!-- Real time thread messages -->
+         <script>
+            const scrollBtn = document.getElementById('scrollToBottomBtn');
+            const chatBox = document.getElementById('chat-box');
+
+            function fetchMessages() {
+                const wasNearBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 100;
+
+                fetch("{% url 'get_thread_messages' thread.id %}")
+                    .then(res => res.json())
+                    .then(data => {
+                        chatBox.innerHTML = '';
+
+                        const isLoggedIn = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
+
+                        data.messages.forEach(msg => {
+                            const isCurrentUser = msg.username === "{{ user.username }}";
+                            let nameHTML;
+
+                            if (isCurrentUser) {
+                                nameHTML = `<strong style="color: ${msg.color};">${msg.username}</strong`;
+                            } else if (isLoggedIn) {
+                                nameHTML = `<a href"#" style="color: ${msg.color};" onclick=openFriendModal(null, '${msg.username}', event); return false;">${msg.username}</a`;
+                            } else {
+                                nameHTML = `<strong style="color: ${msg.color};">${msg.username}</strong`;
+                            }
+
+                            chatBox.innerHTML += `
+                                <div class="message mb-2">
+                                    ${nameHTML} ${msg.content} <br>
+                                    <small>${msg.timestamp}</small>
+                                </div>
+                            `;
+                        });
+
+                        if (wasNearBottom) {
+                            chatBox.scrollTop = chatBox.scrollHeight;
+                        }
+                    });
+            }
+
+            chatBox.addEventListener('scroll', () => {
+                const threshold = 100;
+                const isAtBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < threshold;
+                scrollBtn.style.display = isAtBottom ? 'none' : 'block';
+            });
+
+            scrollBtn.addEventListener('click', () => {
+                chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+            });
+
+            setInterval(fetchMessages, 2000);
+            fetchMessages();
+
+            function openFriendModal(userID, username, event) {
+                if (event) event.preventDefault();
+
+                const modalE1 = document.getElementById('friendModal');
+                document.getElementById('friendName').innerText = username;
+                document.getElementById('friendForm').action = `/friend-request/send/${userId || 0}/`;
+
+                const modal = bootstrap.Modal.getOrCreateInstance(modelE1);
+            }
+         </script>
+
+         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
