@@ -211,3 +211,20 @@ def create_thread(request):
             ChatThread.objects.create(title=title, created_by=created_by)
             return redirect('chat_threads')
     return render(request, 'chat/create_thread.html')
+
+def get_thread_messages(request, thread_id):
+    thread = get_object_or_404(ChatThread, id=thread_id)
+    messages = thread.messages.order_by('date_posted')
+    data = []
+
+    for message in messages:
+        color = message.author.profile.username_color if message.author and hasattr(message.author, "profile") else "#000"
+        data.append({
+            "username": message.username,
+            "content": message.content,
+            "timestamp": message.date_posted.strftime("%Y-%m-%d %H:%M:%S"),
+            "color": color
+        })
+
+    return JsonResponse({"messages": data})
+

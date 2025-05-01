@@ -20,6 +20,7 @@ urlpatterns = [
         path('chat_threads', views.chat_threads, name='chat_threads'),
         path('chat_threads/create/', views.create_thread, name='create_thread'),
         path('chat_threads/<int:thread_id>', views.thread_detail, name='thread_detail'),
+        path('get_thread_messages/<int:thread_id>/', views.get_thread_messages, name='get_thread_messages'),
     ]
 
 

@@ -92,7 +92,8 @@
 
                             chatBox.innerHTML += `
                                 <div class="message mb-2">
-                                    ${nameHTML} ${msg.content} <br>
+                                    ${nameHTML}
+                                    <div>${msg.content}</div>
                                     <small>${msg.timestamp}</small>
                                 </div>
                             `;
