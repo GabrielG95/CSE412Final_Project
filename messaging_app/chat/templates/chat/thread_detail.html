@@ -42,7 +42,7 @@
         </div>
 
         <!-- Friend Request Modal -->
-        <div class="modal fade" id="friendModal" tabindex="-1" aria-labelledby="friendModalLabel" areai-hidden="true">
+        <div class="modal fade" id="friendModal" tabindex="-1" aria-labelledby="friendModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form method="post" id="friendForm">
                     {% csrf_token %}
@@ -81,19 +81,18 @@
                         data.messages.forEach(msg => {
                             const isCurrentUser = msg.username === "{{ user.username }}";
                             let nameHTML;
+                            const safeUsername = msg.username.replace(/'/g, "\\'");
 
-                            if (isCurrentUser) {
-                                nameHTML = `<strong style="color: ${msg.color};">${msg.username}</strong`;
-                            } else if (isLoggedIn) {
-                                nameHTML = `<a href"#" style="color: ${msg.color};" onclick=openFriendModal(null, '${msg.username}', event); return false;">${msg.username}</a`;
+                            if (isCurrentUser || !msg.author_id) {
+                                nameHTML = `<strong style="color: ${msg.color};">${msg.username}</strong>`;
                             } else {
-                                nameHTML = `<strong style="color: ${msg.color};">${msg.username}</strong`;
+                                nameHTML = `<a href="#" style="color: ${msg.color};" onclick="openFriendModal('${msg.author_id}', '${safeUsername}', event); return false;">${msg.username}</a>`;
                             }
 
                             chatBox.innerHTML += `
                                 <div class="card mb-3" style="border-radius: 15px;">
                                     <div class="card-body text-left">
-                                        <strong style="color: ${msg.color};">${msg.username}</strong>
+                                        ${nameHTML}
                                         <p class="mb-1">${msg.content}</p>
                                         <small class="text-muted">${msg.timestamp}</small>
                                     </div>
@@ -120,14 +119,15 @@
             setInterval(fetchMessages, 2000);
             fetchMessages();
 
-            function openFriendModal(userID, username, event) {
+            function openFriendModal(userId, username, event) {
                 if (event) event.preventDefault();
 
-                const modalE1 = document.getElementById('friendModal');
                 document.getElementById('friendName').innerText = username;
-                document.getElementById('friendForm').action = `/friend-request/send/${userId || 0}/`;
+                document.getElementById('friendForm').action = `/friend-request/send/${userId}/`;
 
-                const modal = bootstrap.Modal.getOrCreateInstance(modelE1);
+                const modalE1 = document.getElementById('friendModal');
+                const modal = bootstrap.Modal.getOrCreateInstance(modalE1);
+                modal.show();
             }
          </script>
 

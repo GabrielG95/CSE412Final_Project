@@ -223,7 +223,8 @@ def get_thread_messages(request, thread_id):
             "username": message.username,
             "content": message.content,
             "timestamp": message.date_posted.strftime("%Y-%m-%d %H:%M:%S"),
-            "color": color
+            "color": color,
+            "author_id": message.author.id if message.author else None
         })
 
     return JsonResponse({"messages": data})
